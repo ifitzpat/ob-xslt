@@ -48,7 +48,7 @@
 ;; be called by the `org-babel-execute:xslt' function below.
 (defun org-babel-expand-body:xslt (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
-  (require 'inf-xslt)
+  ;(require 'inf-xslt)
   (let ((vars (nth 1 (or processed-params (org-babel-process-params params)))))
     (concat
      (mapconcat ;; define any variables
@@ -80,17 +80,20 @@
   "Execute a block of xslt code with org-babel.
 This function is called by `org-babel-execute-src-block'"
   (message "executing xslt source code block")
-  (let* ((processed-params (org-babel-process-params params))
-         ;; set the session if the session variable is non-nil
-         (session (org-babel-xslt-initiate-session (first processed-params)))
-         ;; variables assigned for use in the block
-         (vars (second processed-params))
-         (result-params (third processed-params))
-         ;; either OUTPUT or VALUE which should behave as described above
-         (result-type (fourth processed-params))
-         ;; expand the body with `org-babel-expand-body:xslt'
-         (full-body (org-babel-expand-body:xslt
-                     body params processed-params)))
+  (let*
+
+      ;; ((processed-params (org-babel-process-params params))
+      ;;    ;; set the session if the session variable is non-nil
+      ;;    ;; (session (org-babel-xslt-initiate-session (first processed-params)))
+      ;;    ;; variables assigned for use in the block
+      ;;    (vars (second processed-params))
+      ;;    (result-params (third processed-params))
+      ;;    ;; either OUTPUT or VALUE which should behave as described above
+      ;;    (result-type (fourth processed-params))
+      ;;    ;; expand the body with `org-babel-expand-body:xslt'
+      ;;    (full-body (org-babel-expand-body:xslt
+      ;;                body params processed-params)))
+      ((foo "bar"))
     ;; actually execute the source-code block either in a session or
     ;; possibly by dropping it to a temporary file and evaluating the
     ;; file.
@@ -117,6 +120,7 @@ STDERR with `org-babel-eval-error-notify'."
 	(xml-file (org-babel-temp-file "ob-xslt-xml-"))
 	(xsl-file (org-babel-temp-file "ob-xslt-xsl-"))
 	exit-code)
+    (message xml-file)
     (with-current-buffer err-buff (erase-buffer))
     (setq exit-code
 	  (async-shell-command "xsltproc test.xslt test.xml")
