@@ -1,8 +1,8 @@
 ;;; ob-xslt.el --- org-babel functions for xslt evaluation
 
-;; Copyright (C) your name here
+;; Copyright (C) Dr. Ian FitzPatrick
 
-;; Author: your name here
+;; Author: Dr. Ian FitzPatrick
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: https://orgmode.org
 ;; Version: 0.01
@@ -26,29 +26,9 @@
 
 ;;; Commentary:
 
-;; This file is not intended to ever be loaded by org-babel, rather it
-;; is a xslt for use in adding new language support to Org-babel.
-;; Good first steps are to copy this file to a file named by the
-;; language you are adding, and then use `query-replace' to replace
-;; all strings of "xslt" in this file with the name of your new
-;; language.
-;;
-;; If you have questions as to any of the portions of the file defined
-;; below please look to existing language support for guidance.
-;;
-;; If you are planning on adding a language to org-babel we would ask
-;; that if possible you fill out the FSF copyright assignment form
-;; available at https://orgmode.org/request-assign-future.txt as this
-;; will make it possible to include your language support in the core
-;; of Org-mode, otherwise unassigned language support files can still
-;; be included in the contrib/ directory of the Org-mode repository.
-
 ;;; Requirements:
 
-;; Use this section to list the requirements of this language.  Most
-;; languages will require that at least the language be installed on
-;; the user's system, and the Emacs major mode relevant to the
-;; language be installed as well.
+;; xsltproc
 
 ;;; Code:
 (require 'ob)
@@ -58,7 +38,7 @@
 ;; possibly require modes required for your language
 
 ;; optionally define a file extension for this language
-(add-to-list 'org-babel-tangle-lang-exts '("xslt" . "tmp"))
+(add-to-list 'org-babel-tangle-lang-exts '("xslt" . "xslt"))
 
 ;; optionally declare default header arguments for this language
 (defvar org-babel-default-header-args:xslt '())
@@ -97,9 +77,9 @@
 ;; arguments which you feel may be useful -- all header arguments
 ;; specified by the user will be available in the PARAMS variable.
 (defun org-babel-execute:xslt (body params)
-  "Execute a block of Xslt code with org-babel.
+  "Execute a block of xslt code with org-babel.
 This function is called by `org-babel-execute-src-block'"
-  (message "executing Xslt source code block")
+  (message "executing xslt source code block")
   (let* ((processed-params (org-babel-process-params params))
          ;; set the session if the session variable is non-nil
          (session (org-babel-xslt-initiate-session (first processed-params)))
