@@ -82,18 +82,18 @@ This function is called by `org-babel-execute-src-block'"
   (message "executing xslt source code block")
   (let*
 
-      ;; ((processed-params (org-babel-process-params params))
-      ;;    ;; set the session if the session variable is non-nil
-      ;;    ;; (session (org-babel-xslt-initiate-session (first processed-params)))
-      ;;    ;; variables assigned for use in the block
-      ;;    (vars (second processed-params))
-      ;;    (result-params (third processed-params))
-      ;;    ;; either OUTPUT or VALUE which should behave as described above
-      ;;    (result-type (fourth processed-params))
-      ;;    ;; expand the body with `org-babel-expand-body:xslt'
-      ;;    (full-body (org-babel-expand-body:xslt
-      ;;                body params processed-params)))
-      ((foo "bar"))
+      ((processed-params (org-babel-process-params params))
+         ;; set the session if the session variable is non-nil
+         ;; (session (org-babel-xslt-initiate-session (first processed-params)))
+         ;; variables assigned for use in the block
+         (vars (second processed-params))
+         (result-params (third processed-params))
+         ;; either OUTPUT or VALUE which should behave as described above
+         (result-type (fourth processed-params))
+         ;; expand the body with `org-babel-expand-body:xslt'
+         (full-body (org-babel-expand-body:xslt
+                     body params processed-params)))
+
     ;; actually execute the source-code block either in a session or
     ;; possibly by dropping it to a temporary file and evaluating the
     ;; file.
@@ -104,26 +104,31 @@ This function is called by `org-babel-execute-src-block'"
     ;; for external evaluation the functions defined in
     ;; `org-babel-eval' will probably be helpful.
     ;;
-    (org-babel-eval-xslt "xsltproc" body)
+
+    ; now get xml from vars input=
+
+    (org-babel-eval-xslt "xsltproc" body xml)
     ;; when forming a shell command, or a fragment of code in some
     ;; other language, please preprocess any file names involved with
     ;; the function `org-babel-process-file-name'. (See the way that
     ;; function is used in the language files)
     ))
+;
 
-
-(defun org-babel-eval-xslt (cmd body)
+(defun org-babel-eval-xslt (cmd body xml)
   "Run CMD on BODY.
 If CMD succeeds then return its results, otherwise display
 STDERR with `org-babel-eval-error-notify'."
   (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
 	(xml-file (org-babel-temp-file "ob-xslt-xml-"))
 	(xsl-file (org-babel-temp-file "ob-xslt-xsl-"))
+	(output-file (org-babel-temp-file "ob-xslt-out-"))
 	exit-code)
-    (message xml-file)
+    (with-temp-file xsl-file (insert body))
+    (with-temp-file xml-file (insert xml))
     (with-current-buffer err-buff (erase-buffer))
     (setq exit-code
-	  (async-shell-command "xsltproc test.xslt test.xml")
+	  (shell-command (concat "xsltproc " xsl-file " " xml-file) output-file err-buff)
 	  )
       (if (or (not (numberp exit-code)) (> exit-code 0))
 	  (progn
@@ -137,7 +142,8 @@ STDERR with `org-babel-eval-error-notify'."
 		  ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
 		  (setq buffer-read-only nil))))
 	    nil)
-	(buffer-string))))
+	; return the contents of output file
+	(with-current-buffer output-file (buffer-string)))))
 
 
 ;; This function should be used to assign any variables in params in
