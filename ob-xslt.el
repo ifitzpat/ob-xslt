@@ -1,4 +1,4 @@
-;;; ob-template.el --- org-babel functions for template evaluation
+;;; ob-xslt.el --- org-babel functions for xslt evaluation
 
 ;; Copyright (C) your name here
 
@@ -27,10 +27,10 @@
 ;;; Commentary:
 
 ;; This file is not intended to ever be loaded by org-babel, rather it
-;; is a template for use in adding new language support to Org-babel.
+;; is a xslt for use in adding new language support to Org-babel.
 ;; Good first steps are to copy this file to a file named by the
 ;; language you are adding, and then use `query-replace' to replace
-;; all strings of "template" in this file with the name of your new
+;; all strings of "xslt" in this file with the name of your new
 ;; language.
 ;;
 ;; If you have questions as to any of the portions of the file defined
@@ -58,23 +58,23 @@
 ;; possibly require modes required for your language
 
 ;; optionally define a file extension for this language
-(add-to-list 'org-babel-tangle-lang-exts '("template" . "tmp"))
+(add-to-list 'org-babel-tangle-lang-exts '("xslt" . "tmp"))
 
 ;; optionally declare default header arguments for this language
-(defvar org-babel-default-header-args:template '())
+(defvar org-babel-default-header-args:xslt '())
 
 ;; This function expands the body of a source code block by doing
 ;; things like prepending argument definitions to the body, it should
-;; be called by the `org-babel-execute:template' function below.
-(defun org-babel-expand-body:template (body params &optional processed-params)
+;; be called by the `org-babel-execute:xslt' function below.
+(defun org-babel-expand-body:xslt (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
-  (require 'inf-template)
+  (require 'inf-xslt)
   (let ((vars (nth 1 (or processed-params (org-babel-process-params params)))))
     (concat
      (mapconcat ;; define any variables
       (lambda (pair)
         (format "%s=%S"
-                (car pair) (org-babel-template-var-to-template (cdr pair))))
+                (car pair) (org-babel-xslt-var-to-xslt (cdr pair))))
       vars "\n") "\n" body "\n")))
 
 ;; This is the main function which is called to evaluate a code
@@ -96,25 +96,25 @@
 ;; "session" evaluation).  Also you are free to define any new header
 ;; arguments which you feel may be useful -- all header arguments
 ;; specified by the user will be available in the PARAMS variable.
-(defun org-babel-execute:template (body params)
-  "Execute a block of Template code with org-babel.
+(defun org-babel-execute:xslt (body params)
+  "Execute a block of Xslt code with org-babel.
 This function is called by `org-babel-execute-src-block'"
-  (message "executing Template source code block")
+  (message "executing Xslt source code block")
   (let* ((processed-params (org-babel-process-params params))
          ;; set the session if the session variable is non-nil
-         (session (org-babel-template-initiate-session (first processed-params)))
+         (session (org-babel-xslt-initiate-session (first processed-params)))
          ;; variables assigned for use in the block
          (vars (second processed-params))
          (result-params (third processed-params))
          ;; either OUTPUT or VALUE which should behave as described above
          (result-type (fourth processed-params))
-         ;; expand the body with `org-babel-expand-body:template'
-         (full-body (org-babel-expand-body:template
+         ;; expand the body with `org-babel-expand-body:xslt'
+         (full-body (org-babel-expand-body:xslt
                      body params processed-params)))
     ;; actually execute the source-code block either in a session or
     ;; possibly by dropping it to a temporary file and evaluating the
     ;; file.
-    ;; 
+    ;;
     ;; for session based evaluation the functions defined in
     ;; `org-babel-comint' will probably be helpful.
     ;;
@@ -129,25 +129,25 @@ This function is called by `org-babel-execute-src-block'"
 
 ;; This function should be used to assign any variables in params in
 ;; the context of the session environment.
-(defun org-babel-prep-session:template (session params)
+(defun org-babel-prep-session:xslt (session params)
   "Prepare SESSION according to the header arguments specified in PARAMS."
   )
 
-(defun org-babel-template-var-to-template (var)
-  "Convert an elisp var into a string of template source code
+(defun org-babel-xslt-var-to-xslt (var)
+  "Convert an elisp var into a string of xslt source code
 specifying a var of the same value."
   (format "%S" var))
 
-(defun org-babel-template-table-or-string (results)
+(defun org-babel-xslt-table-or-string (results)
   "If the results look like a table, then convert them into an
 Emacs-lisp table, otherwise return the results as a string."
   )
 
-(defun org-babel-template-initiate-session (&optional session)
+(defun org-babel-xslt-initiate-session (&optional session)
   "If there is not a current inferior-process-buffer in SESSION then create.
 Return the initialized session."
   (unless (string= session "none")
     ))
 
-(provide 'ob-template)
-;;; ob-template.el ends here
+(provide 'ob-xslt)
+;;; ob-xslt.el ends here
