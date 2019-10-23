@@ -49,6 +49,9 @@
 (defun org-babel-expand-body:xslt (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
   ;(require 'inf-xslt)
+  (debug)
+  (message "hello")
+  (message (cdr (plist-get :var params)))
   (let ((vars (nth 1 (or processed-params (org-babel-process-params params)))))
     (concat
      (mapconcat ;; define any variables
@@ -81,31 +84,7 @@
 This function is called by `org-babel-execute-src-block'"
   (message "executing xslt source code block")
   (let*
-
-      ((processed-params (org-babel-process-params params))
-         ;; set the session if the session variable is non-nil
-         ;; (session (org-babel-xslt-initiate-session (first processed-params)))
-         ;; variables assigned for use in the block
-         (vars (second processed-params))
-         (result-params (third processed-params))
-         ;; either OUTPUT or VALUE which should behave as described above
-         (result-type (fourth processed-params))
-         ;; expand the body with `org-babel-expand-body:xslt'
-         (full-body (org-babel-expand-body:xslt
-                     body params processed-params)))
-
-    ;; actually execute the source-code block either in a session or
-    ;; possibly by dropping it to a temporary file and evaluating the
-    ;; file.
-    ;;
-    ;; for session based evaluation the functions defined in
-    ;; `org-babel-comint' will probably be helpful.
-    ;;
-    ;; for external evaluation the functions defined in
-    ;; `org-babel-eval' will probably be helpful.
-    ;;
-
-    ; now get xml from vars input=
+    ((xml (cdr (cdr (assoc :var params) ) )))
 
     (org-babel-eval-xslt "xsltproc" body xml)
     ;; when forming a shell command, or a fragment of code in some
