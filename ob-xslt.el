@@ -101,11 +101,40 @@ This function is called by `org-babel-execute-src-block'"
     ;; for external evaluation the functions defined in
     ;; `org-babel-eval' will probably be helpful.
     ;;
+    (org-babel-eval-xslt "xsltproc" body)
     ;; when forming a shell command, or a fragment of code in some
     ;; other language, please preprocess any file names involved with
     ;; the function `org-babel-process-file-name'. (See the way that
     ;; function is used in the language files)
     ))
+
+
+(defun org-babel-eval-xslt (cmd body)
+  "Run CMD on BODY.
+If CMD succeeds then return its results, otherwise display
+STDERR with `org-babel-eval-error-notify'."
+  (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
+	(xml-file (org-babel-temp-file "ob-xslt-xml-"))
+	(xsl-file (org-babel-temp-file "ob-xslt-xsl-"))
+	exit-code)
+    (with-current-buffer err-buff (erase-buffer))
+    (setq exit-code
+	  (async-shell-command "xsltproc test.xslt test.xml")
+	  )
+      (if (or (not (numberp exit-code)) (> exit-code 0))
+	  (progn
+	    (with-current-buffer err-buff
+	      (org-babel-eval-error-notify exit-code (buffer-string)))
+	    (save-excursion
+	      (when (get-buffer org-babel-error-buffer-name)
+		(with-current-buffer org-babel-error-buffer-name
+		  (unless (derived-mode-p 'compilation-mode)
+		    (compilation-mode))
+		  ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
+		  (setq buffer-read-only nil))))
+	    nil)
+	(buffer-string))))
+
 
 ;; This function should be used to assign any variables in params in
 ;; the context of the session environment.
