@@ -49,16 +49,8 @@
 (defun org-babel-expand-body:xslt (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
   ;(require 'inf-xslt)
-  (debug)
-  (message "hello")
-  (message (cdr (plist-get :var params)))
-  (let ((vars (nth 1 (or processed-params (org-babel-process-params params)))))
-    (concat
-     (mapconcat ;; define any variables
-      (lambda (pair)
-        (format "%s=%S"
-                (car pair) (org-babel-xslt-var-to-xslt (cdr pair))))
-      vars "\n") "\n" body "\n")))
+  body
+)
 
 ;; This is the main function which is called to evaluate a code
 ;; block.
@@ -84,7 +76,8 @@
 This function is called by `org-babel-execute-src-block'"
   (message "executing xslt source code block")
   (let*
-    ((xml (cdr (cdr (assoc :var params) ) )))
+      ((xml (cdr (cdr (assoc :var params) ) ))
+       (xml (s-replace-regexp "^#\+.*\n" "" xml)))
 
     (org-babel-eval-xslt "xsltproc" body xml)
     ;; when forming a shell command, or a fragment of code in some
