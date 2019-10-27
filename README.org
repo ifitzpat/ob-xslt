@@ -1,9 +1,13 @@
 ** Example
 
-*** XML file
+*** Processing a named source block
 
+
+**** Example data in source block
+
+#+begin_src org
 #+name: my-xml-file
-#+begin_src sgml :tangle test.xml
+#+begin_src nxml
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
   <cd>
@@ -217,11 +221,14 @@
 </catalog>
 
 #+end_src
+#+end_src
 
-*** XSLT
+**** XSLT block
 
+The xml source is provided via the ~input~ variable in the source block header.
 
-#+begin_src xslt :tangle test.xslt :var input=(extract-src-content "my-xml-file")
+#+begin_src org
+#+begin_src xslt :var input=(extract-src-content "my-xml-file")
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsl:stylesheet version="1.0"
@@ -249,9 +256,22 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 </xsl:stylesheet>
 #+end_src
+#+end_src
 
-#+RESULTS:
-#+begin_example
+You can provide a named source block as input using the
+following elisp snippet.
+
+#+begin_src elisp
+(defun extract-src-content (name)
+  (save-excursion
+    (org-babel-goto-named-src-block name)
+    (org-element-property :value (org-element-at-point))))
+#+end_src
+
+
+**** Results
+
+#+begin_src nxml
 <html><body>
 <h2>My CD Collection</h2>
 <table border="1">
@@ -365,4 +385,47 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 </tr>
 </table>
 </body></html>
-#+end_example
+#+end_src
+
+*** Processing an API call
+
+Alternatively
+
+#+begin_src org
+#+name: my-api
+#+BEGIN_SRC restclient :var endpoint="localhost:8080"
+GET :endpoint/api?foo=bar
+#+END_SRC
+#+end_src
+
+
+#+begin_src org
+#+begin_src xslt :var input=my-api()
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match="/">
+  <html>
+  <body>
+  <h2>My CD Collection</h2>
+  <table border="1">
+    <tr bgcolor="#9acd32">
+      <th>Title</th>
+      <th>Artist</th>
+    </tr>
+    <xsl:for-each select="catalog/cd">
+    <tr>
+      <td><xsl:value-of select="title"/></td>
+      <td><xsl:value-of select="artist"/></td>
+    </tr>
+    </xsl:for-each>
+  </table>
+  </body>
+  </html>
+</xsl:template>
+
+</xsl:stylesheet>
+#+end_src
+#+end_src
