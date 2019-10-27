@@ -25,6 +25,9 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
+;;
+;; process xml documents with xslt from org babel
+;;
 
 ;;; Requirements:
 
@@ -36,6 +39,11 @@
 (require 'ob-comint)
 (require 'ob-eval)
 ;; possibly require modes required for your language
+(define-derived-mode xslt-mode nxml-mode "xslt"
+  "Major mode for editing xslt templates."
+  )
+
+
 
 ;; optionally define a file extension for this language
 (add-to-list 'org-babel-tangle-lang-exts '("xslt" . "xslt"))
