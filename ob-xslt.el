@@ -49,15 +49,15 @@
 (add-to-list 'org-babel-tangle-lang-exts '("xslt" . "xslt"))
 
 ;; optionally declare default header arguments for this language
-(defvar org-babel-default-header-args:xslt '())
+(defvar org-babel-default-header-args:xslt '()) ; TODO use this for input in stead of variable
 
 ;; This function expands the body of a source code block by doing
 ;; things like prepending argument definitions to the body, it should
 ;; be called by the `org-babel-execute:xslt' function below.
 (defun org-babel-expand-body:xslt (body params &optional processed-params)
   "Expand BODY according to PARAMS, return the expanded body."
-  ;(require 'inf-xslt)
-  body
+  ;(require 'inf-xslt) : TODO check if needed
+  body ; TODO translate params to xml variables
 )
 
 ;; This is the main function which is called to evaluate a code
@@ -85,7 +85,7 @@ This function is called by `org-babel-execute-src-block'"
   (message "executing xslt source code block")
   (let*
       ((xml (cdr (cdr (assoc :var params) ) ))
-       (xml (s-replace-regexp "^#\+.*\n" "" xml)))
+       (xml (s-replace-regexp "^#\+.*\n" "" xml))) ; remove orgmode markup from input
 
     (org-babel-eval-xslt "xsltproc" body xml)
     ;; when forming a shell command, or a fragment of code in some
