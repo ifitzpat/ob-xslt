@@ -5,7 +5,7 @@
 
 **** Example data in source block
 
-#+begin_src org
+#+begin_src example
 #+name: my-xml-file
 #+begin_src nxml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -221,13 +221,13 @@
 </catalog>
 
 #+end_src
-#+end_src
+#+end_example
 
 **** XSLT block
 
 The xml source is provided via the ~input~ variable in the source block header.
 
-#+begin_src org
+#+begin_src example
 #+begin_src xslt :var input=(extract-src-content "my-xml-file")
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -256,7 +256,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 </xsl:stylesheet>
 #+end_src
-#+end_src
+#+end_example
 
 You can provide a named source block as input using the
 following elisp snippet.
@@ -271,7 +271,7 @@ following elisp snippet.
 
 **** Results
 
-#+begin_src nxml
+#+begin_src html
 <html><body>
 <h2>My CD Collection</h2>
 <table border="1">
@@ -387,19 +387,22 @@ following elisp snippet.
 </body></html>
 #+end_src
 
-*** Processing an API call
+*** Processing source block output
 
-Alternatively
+Alternatively you can consume the output of, for example, an api call from a
+restclient source block (or any other language block that yields xml
+ouput) by providing the source block name (with brackets and relevant
+parameters) as the input variable.
 
-#+begin_src org
+#+begin_example
 #+name: my-api
 #+BEGIN_SRC restclient :var endpoint="localhost:8080"
 GET :endpoint/api?foo=bar
 #+END_SRC
-#+end_src
+#+end_example
 
 
-#+begin_src org
+#+begin_example
 #+begin_src xslt :var input=my-api()
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -428,4 +431,4 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 </xsl:stylesheet>
 #+end_src
-#+end_src
+#+end_example
