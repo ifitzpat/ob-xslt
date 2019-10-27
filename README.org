@@ -34,7 +34,6 @@
 :    <year>1982</year>
 :  </cd>
 : </catalog>
-:
 : #+end_src
 
 **** XSLT block
@@ -43,9 +42,7 @@ The xml source is provided via the ~input~ variable in the source block header.
 
 : #+begin_src xslt :var input=(extract-src-content "my-xml-file")
 : <?xml version="1.0" encoding="UTF-8"?>
-:
 : <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-:
 : <xsl:template match="/">
 :  <html>
 :  <body>
@@ -65,7 +62,6 @@ The xml source is provided via the ~input~ variable in the source block header.
 :  </body>
 :  </html>
 : </xsl:template>
-:
 : </xsl:stylesheet>
 : #+end_src
 
@@ -121,9 +117,7 @@ parameters) as the input variable.
 
 : #+begin_src xslt :var input=my-api()
 : <?xml version="1.0" encoding="UTF-8"?>
-:
 : <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-:
 : <xsl:template match="/">
 :  <html>
 :  <body>
@@ -143,6 +137,5 @@ parameters) as the input variable.
 :  </body>
 :  </html>
 : </xsl:template>
-:
 : </xsl:stylesheet>
 : #+end_src
