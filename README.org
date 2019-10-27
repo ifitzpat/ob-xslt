@@ -1,9 +1,12 @@
-** Example
+* Ob-xslt
 
-*** Processing a named source block
+Org babel extension to apply xslt templates to xml source blocks or
+source block results.
+
+** Processing a named source block
 
 
-**** Example data in source block
+*** Example data in source block
 
 : #+name: my-xml-file
 : #+begin_src nxml
@@ -36,7 +39,9 @@
 : </catalog>
 : #+end_src
 
-**** XSLT block
+Example derived from: https://www.w3schools.com/xml/xsl_intro.asp
+
+*** XSLT block
 
 The xml source is provided via the ~input~ variable in the source block header.
 
@@ -65,6 +70,8 @@ The xml source is provided via the ~input~ variable in the source block header.
 : </xsl:stylesheet>
 : #+end_src
 
+Example derived from: https://www.w3schools.com/xml/xsl_intro.asp
+
 You can provide a named source block as input using the
 following elisp snippet.
 
@@ -75,8 +82,9 @@ following elisp snippet.
     (org-element-property :value (org-element-at-point))))
 #+end_src
 
+Source: https://emacs.stackexchange.com/questions/29131/get-contents-of-a-named-source-block
 
-**** Results
+*** Results
 
 #+begin_src html
 <html><body>
@@ -102,7 +110,7 @@ following elisp snippet.
 </body></html>
 #+end_src
 
-*** Processing source block output
+** Processing source block output
 
 Alternatively you can consume the output of, for example, an api call from a
 restclient source block (or any other language block that yields xml
