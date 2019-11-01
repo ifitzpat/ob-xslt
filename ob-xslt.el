@@ -38,6 +38,8 @@
 (require 'ob-ref)
 (require 'ob-comint)
 (require 'ob-eval)
+(require 's)
+
 ;; possibly require modes required for your language
 (define-derived-mode xslt-mode nxml-mode "xslt"
   "Major mode for editing xslt templates."
